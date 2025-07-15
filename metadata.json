@@ -1,0 +1,56 @@
+{
+  "name": "MedSMS-Crateús AI - Painel Médico",
+  "description": "Uma SPA (Single-Page Application) de gerenciamento médico, que demonstra uma arquitetura avançada e frontend-only, ideal para prototipagem e prova de conceito. Construída com React e TypeScript, utiliza o IndexedDB para funcionalidade offline e persistência de dados. O diferencial é uma arquitetura de IA multi-provedor que permite ao usuário escolher dinamicamente entre Google Gemini, Hugging Face, Groq (Gemma2, DeepSeek) e LM Studio, para alimentar funcionalidades como um assistente de IA com memória (RAG), automação de comunicação e análises estratégicas SWOT.",
+  "requestFramePermissions": [],
+  "dev_notes": {
+    "architecture_overview": {
+      "framework": "React 19 com TypeScript, utilizando exclusivamente componentes funcionais e hooks. A estrutura segue as melhores práticas de desenvolvimento moderno de SPAs.",
+      "styling": "Tailwind CSS, carregado via CDN e configurado diretamente no `index.html` através de um objeto `tailwind.config` para simplicidade e rapidez no desenvolvimento.",
+      "state_management": "A aplicação utiliza uma arquitetura de gerenciamento de estado performática com múltiplos Contextos do React. Este padrão (multi-context) foi escolhido para evitar 'prop-drilling', otimizar as re-renderizações (separando o estado volátil da UI dos dados estáveis da aplicação) e promover uma clara separação de responsabilidades (`DataContext` para dados, `UIContext` para UI, `ActionsContext` para lógica de negócios).",
+      "data_flow": "O fluxo de dados é estritamente unidirecional e otimizado. Componentes consomem estado e ações diretamente dos hooks de contexto (`useDataContext`, `useUIContext`, `useActionsContext`), o que torna os componentes mais limpos e independentes da sua posição na árvore.",
+      "persistence": "Uso do IndexedDB como banco de dados NoSQL do lado do cliente, garantindo funcionalidade completa offline e alta performance. Toda a interação com o banco é abstraída pelo utilitário `utils/db.ts`, que simplifica as operações de CRUD e seeding inicial.",
+      "ai_integration": {
+        "providers": {
+          "google_gemini": {
+            "model": "gemini-2.5-flash",
+            "sdk": "@google/genai"
+          },
+          "hugging_face": {
+            "model": "CEIA-UFG/Gemma-3-Gaia-PT-BR-4b-it",
+            "sdk": "@huggingface/inference"
+          },
+          "groq": {
+            "models": [
+              "gemma2-9b-it",
+              "deepseek-r1-distill-llama-70b"
+            ],
+            "sdk": "Native Fetch API (OpenAI-compatible)"
+          },
+          "lm_studio": {
+            "model": "User-defined (default: gemma-3-gaia-pt-br-4b-it-i1)",
+            "sdk": "Native Fetch API (OpenAI-compatible)"
+          }
+        },
+        "implementation_facade": "A comunicação com as APIs de IA é centralizada em `services/aiService.ts`, que atua como uma **Fachada (Facade Pattern)**. Este serviço roteia as requisições para o provedor de IA selecionado pelo usuário, normaliza as diferentes estruturas de resposta (especialmente para streaming de chat) e constrói os prompts com contexto (RAG - Retrieval-Augmented Generation).",
+        "json_parsing_strategy": "Para obter respostas JSON estruturadas, a aplicação utiliza a funcionalidade `responseSchema` do Gemini e prompts instrucionais para os outros provedores. O `aiService` possui uma lógica robusta para extrair o JSON da resposta, tratando casos onde o JSON está envolto em blocos de markdown (```json...```) ou aninhado dentro de outro objeto.",
+        "security_warning": "CRÍTICO: A arquitetura atual de frontend-only expõe as chaves de API (`API_KEY` para Gemini, `HF_TOKEN` para Hugging Face, `GROQ_API_KEY` para Groq) ao cliente. Isso é **INSEGURO** e inadequado para um ambiente de produção. Para produção, é **ESSENCIAL** mover toda a lógica de chamada da API de IA para um serviço de backend, onde as chaves podem ser armazenadas com segurança como variáveis de ambiente."
+      },
+      "dependencies_and_build": "As dependências são carregadas dinamicamente via um `importmap` no `index.html`. Esta abordagem simplifica o setup de desenvolvimento ao evitar um passo de *bundling* local, mas depende de CDNs para as bibliotecas. O Vite.js é utilizado como servidor de desenvolvimento, gerenciando o hot-reloading e a injeção de variáveis de ambiente do arquivo `.env` no cliente através do `vite.config.ts`."
+    },
+    "file_structure": {
+      "root": "Contém os arquivos de configuração como `package.json`, `vite.config.ts`, `tsconfig.json`, `index.html` e `.env` (não versionado).",
+      "src/ (ou raiz do projeto)": {
+        "index.tsx": "Ponto de entrada do React, onde o App é montado no DOM.",
+        "App.tsx": "Componente raiz que configura os provedores de contexto e o roteador de views.",
+        "types.ts": "Arquivo central com todas as interfaces e tipos TypeScript, servindo como o contrato de dados da aplicação.",
+        "components/": "Contém todos os componentes React, organizados por funcionalidade (views, formulários, ícones, etc.).",
+        "context/": "O coração da arquitetura de gerenciamento de estado. Contém os provedores `DataContext` (dados), `UIContext` (estado da UI) e `ActionsContext` (lógica de negócios).",
+        "data/mock.ts": "Contém os dados de exemplo usados para popular o banco de dados na primeira execução.",
+        "services/aiService.ts": "A Fachada de integração com IA. Isola e gerencia toda a lógica de comunicação com as diversas APIs, normalizando chamadas e respostas.",
+        "utils/db.ts": "Utilitário que abstrai e simplifica todas as operações com o IndexedDB.",
+        "utils/export.ts": "Funções utilitárias para exportação de dados (CSV/XLSX) e cálculos (como idade)."
+      }
+    }
+  },
+  "prompt": ""
+}
