@@ -1,6 +1,29 @@
 {
   "name": "MedSMS-Crateús AI - Painel Médico",
+  "version": "1.0.0",
+  "author": "Marcelo Claro",
   "description": "Uma SPA (Single-Page Application) de gerenciamento médico, que demonstra uma arquitetura avançada e frontend-only, ideal para prototipagem e prova de conceito. Construída com React e TypeScript, utiliza o IndexedDB para funcionalidade offline e persistência de dados. O diferencial é uma arquitetura de IA multi-provedor que permite ao usuário escolher dinamicamente entre Google Gemini, Hugging Face, Groq (Gemma2, DeepSeek) e LM Studio, para alimentar funcionalidades como um assistente de IA com memória (RAG), automação de comunicação e análises estratégicas SWOT.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MarceloClaro/sms.git"
+  },
+  "deployment": {
+    "platform": "Netlify",
+    "url": "https://medsms-crateus-ai-painel-medico.windsurf.build",
+    "configFile": "netlify.toml"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "vite",
+    "medical",
+    "management",
+    "ai",
+    "google-gemini",
+    "huggingface",
+    "groq",
+    "lm-studio"
+  ],
   "requestFramePermissions": [],
   "dev_notes": {
     "architecture_overview": {
