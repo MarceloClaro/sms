@@ -187,11 +187,12 @@ export async function* getAiResponseStream(history: ChatMessage[], context: Chat
             if (text) yield { text };
         }
     } else if (provider.startsWith('groq')) {
-        if (!apiKeys.groq || !apiKeys.groq.trim()) throw new Error("Chave de API do Groq não fornecida. Adicione-a nas configurações.");
+        const groqApiKey = apiKeys.groq || import.meta.env.VITE_GROQ_API_KEY;
+        if (!groqApiKey || !groqApiKey.trim()) throw new Error("Chave de API do Groq não fornecida. Adicione-a nas configurações ou na variável de ambiente VITE_GROQ_API_KEY.");
         const model = provider === 'groq-gemma' ? 'gemma2-9b-it' : 'deepseek-r1-distill-llama-70b';
         const payload = { model, messages: [{ role: "system", content: systemInstruction }, ...apiMessages], temperature: 0.7, };
         const url = 'https://api.groq.com/openai/v1/chat/completions';
-        yield* openAICompatibleStream(url, payload, apiKeys.groq);
+        yield* openAICompatibleStream(url, payload, groqApiKey);
     } else if (provider === 'lm-studio') {
         const model = apiKeys.lmStudioModel || process.env.LM_STUDIO_MODEL || 'gemma-3-gaia-pt-br-4b-it-i1';
         const url = `${apiKeys.lmStudioUrl || process.env.LM_STUDIO_URL || 'http://localhost:1234'}/v1/chat/completions`;
@@ -224,11 +225,12 @@ async function getJsonResponse(systemInstruction: string, userPrompt: string, pr
         });
         textResponse = response.response.candidates?.[0]?.content?.parts?.[0]?.text || '';
     } else if (provider.startsWith('groq')) {
-        if (!apiKeys.groq || !apiKeys.groq.trim()) throw new Error("Chave de API do Groq não fornecida. Adicione-a nas configurações.");
+        const groqApiKey = apiKeys.groq || import.meta.env.VITE_GROQ_API_KEY;
+        if (!groqApiKey || !groqApiKey.trim()) throw new Error("Chave de API do Groq não fornecida. Adicione-a nas configurações ou na variável de ambiente VITE_GROQ_API_KEY.");
         const model = provider === 'groq-gemma' ? 'gemma2-9b-it' : 'deepseek-r1-distill-llama-70b';
         const payload = { model, messages, temperature: 0.2 };
         const url = 'https://api.groq.com/openai/v1/chat/completions';
-        textResponse = await openAICompatibleNonStream(url, payload, apiKeys.groq);
+        textResponse = await openAICompatibleNonStream(url, payload, groqApiKey);
     } else if (provider === 'huggingface') {
         if (!apiKeys.huggingface || !apiKeys.huggingface.trim()) throw new Error("Token do Hugging Face não fornecido. Adicione-o nas configurações.");
         const client = new HfInference(apiKeys.huggingface);
