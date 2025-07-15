@@ -1,4 +1,110 @@
-# MedSMS-Crateús AI - Painel Médico (Documentação Técnica Abrangente)
+# MedSMS-Crateús AI - Painel Médico
+
+## Visão Geral do Projeto
+
+O MedSMS-Crateús AI é um sistema de gerenciamento de clínica médica abrangente, projetado para otimizar a administração de pacientes, agendamentos, procedimentos e finanças. A aplicação integra uma interface de usuário rica e reativa com um assistente de IA para fornecer insights, automações e suporte à decisão.
+
+Este documento serve como um guia técnico para desenvolvedores, detalhando a arquitetura, as funcionalidades e as etapas necessárias para reproduzir o ambiente de desenvolvimento e avaliar o sistema para fins de reengenharia ou contribuição.
+
+## Funcionalidades Principais
+
+A plataforma oferece um conjunto robusto de funcionalidades para o gerenciamento clínico:
+
+- **Dashboard Centralizado**: Visualização rápida de estatísticas vitais da clínica, como agendamentos do dia, receita e status dos pacientes.
+- **Gerenciamento de Pacientes**: Cadastro, edição, visualização e busca de informações detalhadas dos pacientes.
+- **Agendamento Inteligente**: Interface de calendário para marcar, visualizar e gerenciar consultas. Inclui modais para visualização da agenda diária.
+- **Gestão de Médicos e Procedimentos**: Cadastro e organização de médicos, tipos de procedimentos e os próprios procedimentos oferecidos.
+- **Tabelas de Preços**: Criação e gerenciamento de múltiplas tabelas de preços para procedimentos.
+- **Gestão Administrativa**: Gerenciamento de municípios, locais de atendimento e campanhas de saúde.
+- **Registro de Ocorrências**: Sistema para registrar e acompanhar ocorrências relacionadas a agendamentos (ex: cancelamentos, faltas).
+- **Assistente com IA**: Um assistente de IA integrado que oferece:
+  - **Chat Interativo**: Para consultas e obtenção de informações rápidas.
+  - **Análise SWOT**: Geração automática de análises de Forças, Fraquezas, Oportunidades e Ameaças com base nos dados da clínica.
+  - **Sugestões de Automação**: A IA analisa os dados e sugere ações, como o envio de lembretes de consulta por SMS.
+- **Exportação de Dados**: Funcionalidade para exportar dados da aplicação para arquivos Excel (`.xlsx`).
+- **Configurações de API**: Interface para gerenciar as chaves de API para os serviços de IA (Google Gemini, Hugging Face, etc.).
+
+## Tecnologias Utilizadas (Tech Stack)
+
+O projeto é construído com um conjunto de tecnologias modernas para o desenvolvimento web:
+
+- **Frontend**: [React](https://reactjs.org/) (v18) com [TypeScript](https://www.typescriptlang.org/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Inteligência Artificial**:
+  - [@google/generative-ai](https://github.com/google/generative-ai-js): Para integração com a API do Google Gemini.
+  - [@huggingface/inference](https://github.com/huggingface/huggingface.js): Para integração com modelos do Hugging Face.
+- **Banco de Dados no Cliente**: [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) para armazenamento persistente de dados no navegador.
+- **Utilitários**:
+  - [xlsx](https://github.com/SheetJS/sheetjs): Para a geração de planilhas Excel.
+  - [react-hot-toast](https://react-hot-toast.com/): Para notificações e alertas na interface.
+- **Deployment**: [Netlify](https://www.netlify.com/)
+
+## Guia de Instalação e Execução Local
+
+Siga estas etapas para configurar e executar o projeto em seu ambiente de desenvolvimento.
+
+### Pré-requisitos
+
+- [Node.js](https://nodejs.org/) (versão 18.x ou superior)
+- [npm](https://www.npmjs.com/) (geralmente instalado com o Node.js)
+
+### 1. Clonar o Repositório
+
+```bash
+git clone https://github.com/MarceloClaro/sms.git
+cd sms
+```
+
+### 2. Instalar as Dependências
+
+```bash
+npm install
+```
+
+### 3. Configurar Variáveis de Ambiente
+
+O projeto utiliza um arquivo `.env.local` para armazenar chaves de API. Crie este arquivo na raiz do projeto:
+
+```bash
+touch .env.local
+```
+
+Adicione as seguintes variáveis ao arquivo, substituindo `SUA_CHAVE_AQUI` pelas suas chaves de API. Estas são necessárias para o funcionamento do assistente de IA.
+
+```
+VITE_GEMINI_API_KEY=SUA_CHAVE_AQUI
+```
+
+**Nota**: As chaves de API podem ser gerenciadas tanto pelo arquivo `.env.local` quanto pela interface de configurações da aplicação.
+
+### 4. Executar o Servidor de Desenvolvimento
+
+```bash
+npm run dev
+```
+
+A aplicação estará disponível em `http://localhost:5173` (ou outra porta, se a 5173 estiver em uso).
+
+## Estrutura do Projeto
+
+```
+/src
+|-- /components     # Componentes React reutilizáveis
+|-- /context        # Contextos React para gerenciamento de estado global
+|-- /data           # Dados mockados para desenvolvimento e testes
+|-- /services       # Lógica de negócio e comunicação com APIs (IA)
+|-- /utils          # Funções utilitárias (ex: manipulação de DB, exportação)
+|-- App.tsx         # Componente principal da aplicação
+|-- index.tsx       # Ponto de entrada da aplicação React
+|-- types.ts        # Definições de tipos TypeScript
+```
+
+## Deployment
+
+A aplicação está configurada para deploy contínuo na Netlify. Qualquer push para a branch `main` do repositório no GitHub irá acionar um novo build e deploy.
+
+O arquivo `netlify.toml` na raiz do projeto contém as configurações de build e redirecionamento para a Netlify.
+
 
 Este documento fornece uma análise técnica detalhada e um guia completo para o projeto MedSMS-Crateús AI, uma SPA (Single-Page Application) de gerenciamento clínico. O objetivo é servir como uma fonte central de informação para desenvolvedores, arquitetos de software e equipes de avaliação, facilitando a compreensão, manutenção, e a reprodução do ambiente de desenvolvimento.
 
