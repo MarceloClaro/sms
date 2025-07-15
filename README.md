@@ -1,5 +1,7 @@
 # MedSMS-Crateús AI - Painel Médico
 
+[![Deployment](https://img.shields.io/badge/Deployment-Live-brightgreen)](https://medsms-crateus-ai-painel-medico.windsurf.build/)
+
 ## Visão Geral do Projeto
 
 O MedSMS-Crateús AI é um sistema de gerenciamento de clínica médica abrangente, projetado para otimizar a administração de pacientes, agendamentos, procedimentos e finanças. A aplicação integra uma interface de usuário rica e reativa com um assistente de IA para fornecer insights, automações e suporte à decisão.
