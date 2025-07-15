@@ -1,5 +1,5 @@
 
-import { GoogleGenerativeAI, GenerativeModel, Part, GoogleGenerativeAIFetchError } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { HfInference } from '@huggingface/inference';
 import { ChatContext, ChatMessage, AutomationSuggestion, SwotAnalysis, AIProvider } from '../types';
 import { calculateAge } from '../utils/export';
@@ -276,6 +276,9 @@ async function getJsonResponse(systemInstruction: string, userPrompt: string, pr
              throw new Error("Nenhum objeto ou array JSON válido foi encontrado na resposta da IA.");
         }
         
+        // Remove aspas duplas extras que a IA pode adicionar (ex: ""string"")
+        jsonString = jsonString.replace(/""([^""]*)""/g, '"$1"');
+
         let parsedJson = JSON.parse(jsonString);
 
         if (parsedJson && typeof parsedJson === 'object' && !Array.isArray(parsedJson)) {
@@ -386,14 +389,14 @@ Exemplo de formato de saída:
 }
 
 export const generateSwotAnalysis = async (topic: string, analysisData: any, context: ChatContext, provider: AIProvider, apiKeys: ApiKeys): Promise<SwotAnalysis> => {
-     const systemInstruction = `Você é uma API de análise. Sua ÚNICA função é retornar uma análise SWOT em formato JSON. Baseado no tópico e nos dados fornecidos, gere a análise. NUNCA forneça texto, explicações ou pensamentos. Sua resposta DEVE SER apenas o objeto JSON.
-Exemplo de formato de saída:
-{
-  "strengths": ["Alta taxa de comparecimento para Doutor X."],
-  "weaknesses": ["Baixa receita gerada pelo procedimento Y."],
-  "opportunities": ["Expandir marketing para o município Z com base no alto comparecimento."],
-  "threats": ["Concorrência local pode afetar a retenção de pacientes."]
-}`;
+     const systemInstruction = `Você é uma API de análise. Sua ÚNICA função é retornar uma análise SWOT em formato JSON. Baseado no tópico e nos dados fornecidos, gere a análise. NUNCA forneça texto, explicações ou pensamentos. Sua resposta DEVE SER apenas o objeto JSON. Certifique-se de que os valores dentro dos arrays sejam strings simples, sem aspas duplas extras.
+ Exemplo de formato de saída:
+ {
+   "strengths": ["Alta taxa de comparecimento para Doutor X."],
+   "weaknesses": ["Baixa receita gerada pelo procedimento Y."],
+   "opportunities": ["Expandir marketing para o município Z com base no alto comparecimento."],
+   "threats": ["Concorrência local pode afetar a retenção de pacientes."]
+ }`;
     const userPrompt = `
         Tópico da Análise: ${topic}
         Dados para Análise: ${JSON.stringify(analysisData)}

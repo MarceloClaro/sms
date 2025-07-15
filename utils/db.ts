@@ -2,11 +2,11 @@
 
 
 
-import { DataEntityType, Patient, Procedure, Appointment, Doctor, Municipality, HealthCampaign, PriceTable, PriceTableEntry, ProcedureType, Location, Occurrence, ChatMessage } from '../types';
+import { DataEntityType } from '../types';
 import { mockPatients, mockProcedures, mockAppointments, mockDoctors, mockMunicipalities, mockHealthCampaigns, mockPriceTables, mockPriceTableEntries, mockProcedureTypes, mockLocations, mockOccurrences, mockChatHistory } from '../data/mock';
 
 const DB_NAME = 'MedSMS_DB';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 export const STORES: DataEntityType[] = [
     'patients', 'procedures', 'appointments', 'doctors', 'municipalities', 
     'campaigns', 'priceTables', 'priceTableEntries', 'procedureTypes', 'locations', 'occurrences',
@@ -80,14 +80,14 @@ export const initDB = (): Promise<boolean> => {
             countRequest.onerror = (e) => reject(`Failed to count items: ${e}`);
         };
 
-        request.onerror = (event) => {
+        request.onerror = () => {
             console.error('Database error:', request.error);
             reject(`Database error: ${request.error}`);
         };
     });
 };
 
-export const getAllData = <T>(storeName: DataEntityType): Promise<T[]> => {
+export const getAllData = async (storeName: DataEntityType): Promise<any[]> => {
     return new Promise((resolve, reject) => {
         if (!db) {
             return reject('DB not initialized');
@@ -105,7 +105,7 @@ export const getAllData = <T>(storeName: DataEntityType): Promise<T[]> => {
     });
 };
 
-export const saveData = <T extends {id: string | number}>(storeName: DataEntityType, data: T): Promise<T> => {
+export const saveData = async (storeName: DataEntityType, data: any): Promise<any> => {
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(storeName, 'readwrite');
         const store = transaction.objectStore(storeName);
@@ -116,7 +116,7 @@ export const saveData = <T extends {id: string | number}>(storeName: DataEntityT
     });
 };
 
-export const deleteData = (storeName: DataEntityType, id: string): Promise<void> => {
+export const deleteData = async (storeName: DataEntityType, id: string): Promise<void> => {
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(storeName, 'readwrite');
         const store = transaction.objectStore(storeName);
